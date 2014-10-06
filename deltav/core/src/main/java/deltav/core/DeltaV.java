@@ -45,6 +45,6 @@ public class DeltaV extends Game.Default {
 
     @Override
     public void paint(float alpha) {
-
+        // Nothing to do, we paint each update.
     }
 }
