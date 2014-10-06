@@ -2,15 +2,23 @@ package deltav.core.model;
 
 import deltav.core.config.DeltaVGameConfig;
 import deltav.core.util.GravityUtil;
+import playn.core.Image;
 import playn.core.Key;
 import playn.core.Keyboard;
 import playn.core.Surface;
+
+import static playn.core.PlayN.assets;
 
 /**
  * A class for representing the state of the player's ship.  This stores
  * things like fuel remaining, velocity, heading, etc.
  */
 public class DeltaVShip extends DeltaVObject implements Keyboard.Listener {
+
+    /**
+     * The image to use when thrusting.
+     */
+    private Image thrustingImg;
 
     /**
      * The direction the ship is currently pointing, in radians.
@@ -52,12 +60,20 @@ public class DeltaVShip extends DeltaVObject implements Keyboard.Listener {
         fuelRemaining = Math.max(fuelRemaining, 0);
     }
 
+    @Override
+    public void setImg(Image img) {
+        super.setImg(img);
+        // Set up the thrusting img.
+        thrustingImg = assets().getImage("images/spaceship-icon-thrust.png");
+    }
+
     // Keyboard listener implementation
     @Override
     public void onKeyDown(Keyboard.Event event) {
         Key key = event.key();
         if (key.equals(Key.SPACE)) {
             thrusting = true;
+            imgLayer.setImage(thrustingImg);
         } else if (key.equals(Key.LEFT)) {
             rotationDirection = -1;
         } else if (key.equals(Key.RIGHT)) {
@@ -75,6 +91,7 @@ public class DeltaVShip extends DeltaVObject implements Keyboard.Listener {
         Key key = event.key();
         if (key.equals(Key.SPACE)) {
             thrusting = false;
+            imgLayer.setImage(getImg());
         } else if(key.equals(Key.LEFT) || key.equals(Key.RIGHT)) {
             rotationDirection = 0;
         }
@@ -136,6 +153,9 @@ public class DeltaVShip extends DeltaVObject implements Keyboard.Listener {
     @Override
     public void draw(Surface surface) {
         imgLayer.setRotation((float)heading);
+        if (thrusting && fuelRemaining <= 0) {
+            imgLayer.setImage(getImg());
+        }
         super.draw(surface);
     }
 }
