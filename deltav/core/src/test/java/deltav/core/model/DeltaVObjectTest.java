@@ -43,4 +43,15 @@ public class DeltaVObjectTest {
         assertEquals(initialX + expectedVelocityInX, testObject.getxPosition(), 1e-15);
         assertEquals(initialY + expectedVelocityInY, testObject.getyPosition(), 1e-15);
     }
+
+    @Test
+    public void testCollisionDetection() throws Exception {
+        DeltaVObject testObject = new DeltaVObject() {
+        };
+        testObject.setxPosition(100);
+        testObject.setyPosition(100);
+
+        assertTrue(testObject.isBoundedBy(0, 200, 0, 200));
+        assertFalse(testObject.isBoundedBy(200, 400, 200, 400));
+    }
 }
